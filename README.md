@@ -1,2 +1,2 @@
 # Group-8
-Workshop
+Fitness AB Project
