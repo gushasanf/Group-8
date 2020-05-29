@@ -1,0 +1,226 @@
+CREATE TABLE Facility
+(facilityID INTEGER NOT NULL,
+address TEXT,
+PRIMARY KEY (facilityID)
+);
+
+CREATE TABLE Payment
+(paymentID INTEGER NOT NULL,
+paymentType TEXT,
+amount INTEGER,
+payDate INTEGER,
+PRIMARY KEY (paymentID)
+);
+
+
+CREATE TABLE Customer
+(custNumber INTEGER NOT NULL,
+fName TEXT NOT NULL,
+lName TEXT,
+personNumber INTEGER,
+phoneNumber INTEGER,
+billAddress TEXT,
+paymentID INTEGER,
+PRIMARY KEY (custNumber),
+FOREIGN KEY (paymentID) REFERENCES Payment(paymentID)
+);
+
+CREATE TABLE Membership
+(custNumber INTEGER NOT NULL,
+facilityID INTEGER NOT NULL,
+memberType TEXT,
+startDate INTEGER,
+endDate INTEGER,
+memberID INTEGER,
+PRIMARY KEY (custNumber, facilityID),
+FOREIGN KEY (custNumber) REFERENCES Customer (custNumber)
+FOREIGN KEY (facilityID) REFERENCES facility (facilityID)
+);
+
+
+CREATE TABLE Class
+(classNumber INTEGER NOT NULL,
+className TEXT,
+PRIMARY KEY (classNumber)
+);
+
+
+CREATE TABLE ClassSection
+(sectionID INTEGER NOT NULL,
+classNumber INTEGER,
+classDate INTEGER,
+startTime INTEGER,
+classDuration INTEGER,
+instructor TEXT,
+PRIMARY KEY (sectionID),
+FOREIGN KEY (classNumber) REFERENCES Class (classNumber)
+);
+
+
+CREATE TABLE Studio
+(studioNumber INTEGER NOT NULL,
+capacity INTEGER,
+facilityID INTEGER,
+PRIMARY KEY (studioNumber),
+FOREIGN KEY (facilityID) REFERENCES Facility (facilityID)
+);
+ 
+CREATE TABLE ClassSectionStudioBooking
+(classNumber INTEGER NOT NULL,
+sectionID INTEGER NOT NULL,
+studioNumber INTEGER NOT NULL,
+PRIMARY KEY (classNumber, sectionID, studioNumber),
+FOREIGN KEY (classNumber) REFERENCES Class(classNumber),
+FOREIGN KEY (sectionID) REFERENCES ClassSection(sectionID),
+FOREIGN KEY (studioNumber) REFERENCES Studio(studioNumber)
+);
+
+
+CREATE TABLE Booking
+(custNumber INTEGER NOT NULL,
+sectionID INTEGER NOT NULL,
+classNumber INTEGER NOT NULL,
+PRIMARY KEY (custNumber, sectionID, classNumber),
+FOREIGN KEY (custNumber) REFERENCES Customer (custNumber),
+FOREIGN KEY (sectionID) REFERENCES ClassSection (sectionID),
+FOREIGN KEY (classNumber) REFERENCES Class (classNumber)
+);
+
+CREATE TABLE Service
+(serviceID INTEGER NOT NULL,
+serviceDate INTEGER,
+PRIMARY KEY (serviceID)
+);
+
+CREATE TABLE Supplier
+(supplierID INTEGER NOT NULL,
+supplierName TEXT,
+phoneNumber INTEGER,
+PRIMARY KEY (supplierID)
+);
+
+CREATE TABLE Equipment
+(equipmentID INTEGER NOT NULL,
+equipmentName TEXT,
+equipmentType TEXT,
+equipmentStatus TEXT,
+facilityID INTEGER,
+serviceID INTEGER,
+supplierID INTEGER,
+PRIMARY KEY (equipmentID)
+FOREIGN KEY (facilityID) REFERENCES Facility(facilityID),
+FOREIGN KEY (serviceID) REFERENCES Service(serviceID),
+FOREIGN KEY (supplierID) REFERENCES Supplier(supplierID)
+ );
+
+
+
+INSERT INTO facility (facilityID, address) VALUES ("1", "Vasagatan 29");
+INSERT INTO facility (facilityID, address) VALUES ("2", "Hamngatan 2");
+INSERT INTO facility (facilityID, address) VALUES ("3", "Kompassen 3");
+
+INSERT INTO Class (classNumber, className) VALUES ("111", "Yoga");
+INSERT INTO Class (classNumber, className) VALUES ("112", "Yoga");
+INSERT INTO Class (classNumber, className) VALUES ("121", "Spinning");
+INSERT INTO Class (classNumber, className) VALUES ("122", "Spinning");
+INSERT INTO Class (classNumber, className) VALUES ("311", "Crossfit");
+INSERT INTO Class (classNumber, className) VALUES ("312", "Crossfit");
+
+INSERT INTO ClassSectionStudioBooking (classNumber, sectionID, studioNumber) VALUES ("111", "1", "101");
+INSERT INTO ClassSectionStudioBooking (classNumber, sectionID, studioNumber) VALUES ("112", "2", "302");
+INSERT INTO ClassSectionStudioBooking (classNumber, sectionID, studioNumber) VALUES ("121", "3", "201");
+INSERT INTO ClassSectionStudioBooking (classNumber, sectionID, studioNumber) VALUES ("122", "4", "101");
+INSERT INTO ClassSectionStudioBooking (classNumber, sectionID, studioNumber) VALUES ("311", "5", "102");
+INSERT INTO ClassSectionStudioBooking (classNumber, sectionID, studioNumber) VALUES ("312", "6", "202");
+
+INSERT INTO Studio (studioNumber, capacity, facilityID) VALUES ("101", "30", "1");
+INSERT INTO Studio (studioNumber, capacity, facilityID) VALUES ("102", "40", "1");
+INSERT INTO Studio (studioNumber, capacity, facilityID) VALUES ("201", "60", "2");
+INSERT INTO Studio (studioNumber, capacity, facilityID) VALUES ("202", "100", "2");
+INSERT INTO Studio (studioNumber, capacity, facilityID) VALUES ("301", "25", "3");
+INSERT INTO Studio (studioNumber, capacity, facilityID) VALUES ("302", "30", "3");
+
+INSERT INTO ClassSection (sectionID, classNumber, classDate, startTime, classDuration, instructor) VALUES ("1", "111", "20200604", "0900", "90 min", "Thomas L");
+INSERT INTO ClassSection (sectionID, classNumber, classDate, startTime, classDuration, instructor) VALUES ("2", "112",  "20200608", "1600", "120 min", "Lisa U");
+INSERT INTO ClassSection (sectionID, classNumber, classDate, startTime, classDuration, instructor) VALUES ("3", "121", "20200605", "1000", "75 min", "Kirsten N");
+INSERT INTO ClassSection (sectionID, classNumber, classDate, startTime, classDuration, instructor) VALUES ("4", "122", "20200607", "2000", "60 min", "Andreas A");
+INSERT INTO ClassSection (sectionID, classNumber, classDate, startTime, classDuration, instructor) VALUES ("5", "311", "20200603", "0830", "90 min", "Andreas L");
+INSERT INTO ClassSection (sectionID, classNumber, classDate, startTime, classDuration, instructor) VALUES ("6", "312", "20200604", "1600", "60 min", "Anna A");
+
+
+
+
+INSERT INTO Supplier(supplierID, supplierName, phoneNumber) VALUES('302410', 'Equipment AB', '0706608228');
+INSERT INTO Supplier(supplierID, supplierName, phoneNumber) VALUES('203040', 'FitnessHealth', '0709395577');
+
+INSERT INTO Service(serviceID, serviceDate) VALUES('1000', '0');
+INSERT INTO Service(serviceID, serviceDate) VALUES('1001', '0');
+INSERT INTO Service(serviceID, serviceDate) VALUES('1011', '0');
+INSERT INTO Service(serviceID, serviceDate) VALUES('1111', '0');
+INSERT INTO Service(serviceID, serviceDate) VALUES('1002', '0');
+INSERT INTO Service(serviceID, serviceDate) VALUES('1022', '0');
+INSERT INTO Service(serviceID, serviceDate) VALUES('1222', '0');
+INSERT INTO Service(serviceID, serviceDate) VALUES('2222', '0');
+INSERT INTO Service(serviceID, serviceDate) VALUES('2223', '0');
+INSERT INTO Service(serviceID, serviceDate) VALUES('2233', '0');
+
+INSERT INTO Equipment(equipmentID, equipmentName, equipmentType, equipmentStatus, facilityID, serviceID, supplierID) VALUES('1', 'Treadmill', 'Machine', 'Working', '1', '1000', '302410');
+INSERT INTO Equipment(equipmentID, equipmentName, equipmentType, equipmentStatus, facilityID, serviceID, supplierID) VALUES('2', 'Treadmill', 'Machine', 'Working', '2', '1001', '302410');
+INSERT INTO Equipment(equipmentID, equipmentName, equipmentType, equipmentStatus, facilityID, serviceID, supplierID) VALUES('3', 'Bicepcurl', 'Machine', 'null', '1', '1011', '203040');
+INSERT INTO Equipment(equipmentID, equipmentName, equipmentType, equipmentStatus, facilityID, serviceID, supplierID) VALUES('4', 'Bicepcurl', 'Machine', 'null', '2', '1111', '203040');
+INSERT INTO Equipment(equipmentID, equipmentName, equipmentType, equipmentStatus, facilityID, serviceID, supplierID) VALUES('5', 'Dumbell', 'Weight', 'null', '3', '1002', '203040');
+INSERT INTO Equipment(equipmentID, equipmentName, equipmentType, equipmentStatus, facilityID, serviceID, supplierID) VALUES('6', 'Dumbell', 'Weight', 'null', '1', '1022', '203040');
+INSERT INTO Equipment(equipmentID, equipmentName, equipmentType, equipmentStatus, facilityID, serviceID, supplierID) VALUES('7', 'Legpress', 'Machine', 'null', '2', '1222', '302410');
+INSERT INTO Equipment(equipmentID, equipmentName, equipmentType, equipmentStatus, facilityID, serviceID, supplierID) VALUES('8', 'Legpress', 'Machine', 'null', '3', '2222', '302410');
+INSERT INTO Equipment(equipmentID, equipmentName, equipmentType, equipmentStatus, facilityID, serviceID, supplierID) VALUES('9', 'Chestpress', 'Machine', 'null', '2', '2223', '203040');
+INSERT INTO Equipment(equipmentID, equipmentName, equipmentType, equipmentStatus, facilityID, serviceID, supplierID) VALUES('10', 'Chestpress', 'Machine', 'null', '1', '2233', '203040');
+
+
+Sqlite3 select queries
+All classes with starttime, date, duration, studio and facility
+
+select Class.className, ClassSection.classDate, ClassSection.startTime, ClassSection.classDuration, ClassSection.instructor, Studio.studioNumber, Facility.facilityID from Class inner join ClassSection on ClassSection.classNumber = Class.classNumber inner join ClassSectionStudioBooking on ClassSectionStudioBooking.classNumber = ClassSection.classNumber inner join Studio on Studio.studioNumber = ClassSectionStudioBooking.studioNumber inner join Facility on Facility.facilityID = Studio.facilityID;
+
+A specific class with facility, starttime, duration, instructor and studio
+
+select Class.className, ClassSection.classDate, ClassSection.startTime, ClassSection.classDuration, ClassSection.instructor, Studio.studioNumber, Facility.facilityID from Class inner join ClassSection on ClassSection.classNumber = Class.classNumber inner join ClassSectionStudioBooking on ClassSectionStudioBooking.classNumber = ClassSection.classNumber inner join Studio on Studio.studioNumber = ClassSectionStudioBooking.studioNumber inner join Facility on Facility.facilityID = Studio.facilityID where Class.className =’Yoga’;
+
+select Class.className, ClassSection.classDate, ClassSection.startTime, ClassSection.classDuration, ClassSection.instructor, Studio.studioNumber, Facility.facilityID from Class inner join ClassSection on ClassSection.classNumber = Class.classNumber inner join ClassSectionStudioBooking on ClassSectionStudioBooking.classNumber = ClassSection.classNumber inner join Studio on Studio.studioNumber = ClassSectionStudioBooking.studioNumber inner join Facility on Facility.facilityID = Studio.facilityID where Class.className =’Spinning’;
+
+select Class.className, ClassSection.classDate, ClassSection.startTime, ClassSection.classDuration, ClassSection.instructor, Studio.studioNumber, Facility.facilityID from Class inner join ClassSection on ClassSection.classNumber = Class.classNumber inner join ClassSectionStudioBooking on ClassSectionStudioBooking.classNumber = ClassSection.classNumber inner join Studio on Studio.studioNumber = ClassSectionStudioBooking.studioNumber inner join Facility on Facility.facilityID = Studio.facilityID where Class.className =’Crossfit’;
+
+
+See all personal information
+
+All members
+
+
+select Customer.custNumber, Customer.fName, Customer.lName, Customer.personNumber, Customer.phoneNumber, Customer.billAddress, Membership.memberID, Membership.memberType, Membership.startDate, Membership.endDate from Customer inner join Membership on Membership.custNumber = Customer.custNumber;
+
+
+One member
+
+select Customer.custNumber, Customer.fName, Customer.lName, Customer.personNumber, Customer.phoneNumber, Customer.billAddress, Membership.memberID, Membership.memberType, Membership.startDate, Membership.endDate from Customer inner join Membership on Membership.custNumber = Customer.custNumber where Customer.custNumber='9898';
+
+Booked classes for one member with relevant information
+
+select Class.className, ClassSection.classDate, ClassSection.startTime, ClassSection.classDuration, ClassSection.instructor from Class inner join ClassSection on ClassSection.classNumber = Class.classNumber inner join Booking on Booking.classNumber = ClassSection.classNumber where Booking.custNumber =’1337’;
+
+
+
+All equipments that are broken
+
+select * from equipment where equipmentStatus = 'Broken';
+
+
+See when service has been done one a specific equipment
+
+Select Equipment.equipmentID, Equipment.equipmentName, Service.serviceDate, Equipment.equipmentStatus from service inner join equipment on equipment.serviceID = service.serviceID where equipmentname=’Chestpress’;
+
+See all equipments with relevant information
+
+select equipment.equipmentID, equipment.equipmentName, equipment.equipmentType, equipment.equipmentStatus, equipment.facilityID, equipment.serviceID, equipment.supplierID, service.serviceDate from equipment inner join service on equipment.serviceID = service.serviceID inner join facility on equipment.facilityID = facility.facilityID inner join supplier on equipment.supplierID = supplier.supplierID;
+
+
+
+
